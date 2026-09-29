@@ -1,20 +1,20 @@
-# ?? Comunidade Market
+#  Comunidade Market
 
-> **Marketplace & Ecossistema Financeiro Comunit·rio**
+> **Marketplace & Ecossistema Financeiro Comunit√°rio**
 
-O **Comunidade Market** È uma plataforma e-commerce e financeira desenvolvida para conectar empresas, prestadores de serviÁos e consumidores de uma mesma comunidade religiosa. A plataforma permite transaÁıes financeiras em **Reais (R$)** e por meio de uma **Moeda Social/Comunit·ria** com foco em economia circular e apoio m˙tuo.
+O **Comunidade Market** √© uma plataforma e-commerce e financeira desenvolvida para conectar empresas, prestadores de servi√ßos e consumidores de uma mesma comunidade religiosa. A plataforma permite transa√ß√µes financeiras em **Reais (R$)** e por meio de uma **Moeda Social/Comunit√°ria** com foco em economia circular e apoio m√∫tuo.
 
 ---
 
-## ?? Objetivos do Projeto
+##  Objetivos do Projeto
 
-- **Fortalecimento Comunit·rio:** Incentivar o comÈrcio local e o apoio entre empreendedores e membros.
+- **Fortalecimento Comunit√°rio:** Incentivar o com√©rcio local e o apoio entre empreendedores e membros.
 - **Abertura Externa:** Permitir que empresas locais comercializem seus produtos para clientes externos com pagamentos tradicionais.
-- **Economia Circular:** Implementar uma moeda interna (token/crÈdito) com suporte a cashback e carteira digital (*In-App Wallet*).
+- **Economia Circular:** Implementar uma moeda interna (token/cr√©dito) com suporte a cashback e carteira digital (*In-App Wallet*).
 
 ---
 
-## ??? Tecnologias Utilizadas
+## Tecnologias Utilizadas
 
 | Camada | Tecnologia |
 | :--- | :--- |
@@ -26,28 +26,30 @@ O **Comunidade Market** È uma plataforma e-commerce e financeira desenvolvida pa
 | **Infraestrutura** | Docker & GitHub Actions (CI/CD) |
 
 ---
+## üìå Principais Funcionalidades (MVP)
 
-## ?? Principais Funcionalidades (MVP)
-
-1. **Gest„o de Usu·rios e Perfis:**
+1. **Gest√£o de Usu√°rios e Perfis:**
    - Perfis de *Cliente*, *Lojista/Empreendedor* e *Administrador*.
-   - Selo de verificaÁ„o de membro da comunidade.
-2. **Cat·logo & Marketplace:**
-   - Vitrine de produtos e serviÁos com filtros e busca por categoria.
+   - Selo de verifica√ß√£o de membro da comunidade.
+
+2. **Cat√°logo & Marketplace:**
+   - Vitrine de produtos e servi√ßos com filtros e busca por categoria.
+
 3. **Checkout & Pagamentos:**
-   - Suporte a Pix, Cart„o e Boleto.
-   - Pagamento misto (Reais + Moeda Comunit·ria).
-   - Split autom·tico da comiss„o da plataforma.
-4. **Carteira Digital & Moeda Comunit·ria:**
-   - Consulta de saldo (R\$ e Moeda Comunit·ria).
-   - TransferÍncias P2P entre membros via QR Code.
+   - Suporte a Pix, Cart√£o de Cr√©dito e Boleto.
+   - Pagamento misto (Reais + Moeda Comunit√°ria).
+   - Split autom√°tico da comiss√£o da plataforma.
+
+4. **Carteira Digital & Moeda Comunit√°ria:**
+   - Consulta de saldo (R$ e Moeda Comunit√°ria).
+   - Transfer√™ncias P2P entre membros via QR Code.
 
 ---
 
-## ?? DocumentaÁ„o TÈcnica
+##  Documenta√ß√£o T√©cnica
 
-Toda a documentaÁ„o detalhada do projeto est· localizada na pasta docs/:
+Toda a documenta√ß√£o detalhada do projeto est√° localizada na pasta docs/:
 
-- [?? Guia de ContribuiÁ„o (CONTRIBUTING.md)](docs/CONTRIBUTING.md)
-- [?? HistÛrias de Usu·rio (USER_STORIES.md)](docs/USER_STORIES.md)
+- [?? Guia de Contribui√ß√£o (CONTRIBUTING.md)](docs/CONTRIBUTING.md)
+- [?? Hist√≥rias de Usu√°rio (USER_STORIES.md)](docs/USER_STORIES.md)
 - [??? Modelagem e Arquitetura do Banco de Dados (ARCHITECTURE.md)](docs/ARCHITECTURE.md)
