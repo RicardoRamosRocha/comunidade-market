@@ -30,7 +30,7 @@ walletRoutes.get("/me", async (req: Request, res: Response) => {
   }
 });
 
-// POST /wallet/transfer - Transferência P2P entre Membros
+// POST /wallet/transfer - Transferência P2P entre Membros (Aceita Wallet ID, User ID ou E-mail)
 walletRoutes.post("/transfer", async (req: Request, res: Response) => {
   try {
     const senderUserId = req.user.id;
@@ -50,14 +50,32 @@ walletRoutes.post("/transfer", async (req: Request, res: Response) => {
       return res.status(404).json({ error: "Carteira de origem não encontrada." });
     }
 
-    if (senderWallet.id === receiverWalletId) {
+    // Limpa espaços invisíveis caso o usuário tenha copiado e colado o identificador
+    const searchKey = receiverWalletId ? String(receiverWalletId).trim() : "";
+
+    // Evita transferência para si mesmo (checa Wallet ID ou User ID do remetente)
+    if (senderWallet.id === searchKey || senderWallet.userId === searchKey) {
       return res.status(400).json({ error: "Você não pode transferir para si mesmo." });
     }
 
-    // Buscar a carteira do destinatário
-    const receiverWallet = await prisma.wallet.findUnique({ where: { id: receiverWalletId } });
+    // Busca flexível do destinatário: procura por Wallet ID, por User ID ou por E-mail do usuário
+    const receiverWallet = await prisma.wallet.findFirst({
+      where: {
+        OR: [
+          { id: searchKey },
+          { userId: searchKey },
+          { user: { email: searchKey } }
+        ]
+      }
+    });
+
     if (!receiverWallet) {
-      return res.status(404).json({ error: "Carteira de destino não encontrada." });
+      return res.status(404).json({ error: "Carteira ou usuário destinatário não encontrado." });
+    }
+
+    // Impede transferência para si mesmo via e-mail
+    if (receiverWallet.id === senderWallet.id) {
+      return res.status(400).json({ error: "Você não pode transferir para si mesmo." });
     }
 
     // Verificar saldo suficiente

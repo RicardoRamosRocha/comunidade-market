@@ -1,7 +1,7 @@
 import { Router, Request, Response } from "express";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
-import { prisma } from "../lib/prisma";
+import { prisma } from "../lib/prisma.js";
 
 const authRoutes = Router();
 const JWT_SECRET = process.env.JWT_SECRET || "chave_secreta_comunidade_market";
@@ -12,7 +12,7 @@ authRoutes.post("/register", async (req: Request, res: Response) => {
 
     const userExists = await prisma.user.findUnique({ where: { email } });
     if (userExists) {
-      return res.status(400).json({ error: "E-mail já cadastrado na plataforma." });
+      return res.status(400).json({ error: "E-mail jï¿½ cadastrado na plataforma." });
     }
 
     const passwordHash = await bcrypt.hash(password, 8);
@@ -37,7 +37,7 @@ authRoutes.post("/register", async (req: Request, res: Response) => {
     });
 
     return res.status(201).json({
-      message: "Usuário cadastrado com sucesso!",
+      message: "Usuï¿½rio cadastrado com sucesso!",
       user: {
         id: user.id,
         name: user.name,
@@ -48,7 +48,7 @@ authRoutes.post("/register", async (req: Request, res: Response) => {
       },
     });
   } catch (error) {
-    return res.status(500).json({ error: "Erro interno ao cadastrar usuário." });
+    return res.status(500).json({ error: "Erro interno ao cadastrar usuï¿½rio." });
   }
 });
 
