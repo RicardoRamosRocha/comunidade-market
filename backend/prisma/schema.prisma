@@ -1,0 +1,104 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  CLIENT
+  SELLER
+  ADMIN
+}
+
+enum StoreStatus {
+  PENDING
+  APPROVED
+  BLOCKED
+}
+
+enum CurrencyType {
+  BRL
+  COMMUNITY_COIN
+}
+
+enum TransactionType {
+  P2P
+  PURCHASE
+  CASHBACK
+  WITHDRAWAL
+}
+
+model User {
+  id                 String   @id @default(uuid())
+  name               String
+  email              String   @unique
+  passwordHash       String
+  role               Role     @default(CLIENT)
+  isCommunityMember Boolean  @default(false)
+  createdAt          DateTime @default(now())
+
+  stores Store[]
+  wallet Wallet?
+
+  @@map("users")
+}
+
+model Store {
+  id          String      @id @default(uuid())
+  userId      String
+  user        User        @relation(fields: [userId], references: [id])
+  storeName   String
+  description String?
+  phone       String?
+  address     String?
+  status      StoreStatus @default(PENDING)
+  createdAt   DateTime    @default(now())
+
+  products Product[]
+
+  @@map("stores")
+}
+
+model Product {
+  id                   String   @id @default(uuid())
+  storeId              String
+  store                Store    @relation(fields: [storeId], references: [id])
+  title                String
+  description          String?
+  priceBrl             Decimal  @db.Decimal(10, 2)
+  acceptsCommunityCoin Boolean  @default(true)
+  stock                Int      @default(0)
+  createdAt            DateTime @default(now())
+
+  @@map("products")
+}
+
+model Wallet {
+  id          String  @id @default(uuid())
+  userId      String  @unique
+  user        User    @relation(fields: [userId], references: [id])
+  balanceBrl  Decimal @default(0.00) @db.Decimal(10, 2)
+  balanceCoin Decimal @default(0.00) @db.Decimal(10, 2)
+
+  sentTransactions     Transaction[] @relation("SenderWallet")
+  receivedTransactions Transaction[] @relation("ReceiverWallet")
+
+  @@map("wallets")
+}
+
+model Transaction {
+  id               String          @id @default(uuid())
+  senderWalletId   String?
+  senderWallet     Wallet?         @relation("SenderWallet", fields: [senderWalletId], references: [id])
+  receiverWalletId String
+  receiverWallet   Wallet          @relation("ReceiverWallet", fields: [receiverWalletId], references: [id])
+  amount           Decimal         @db.Decimal(10, 2)
+  currencyType     CurrencyType
+  type             TransactionType
+  createdAt        DateTime        @default(now())
+
+  @@map("transactions")
+}
