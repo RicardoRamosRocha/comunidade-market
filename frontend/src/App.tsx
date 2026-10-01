@@ -21,23 +21,56 @@ export default function App() {
   const [transferAmount, setTransferAmount] = useState('25.00');
   const [message, setMessage] = useState('');
 
- // 1. Função para carregar a carteira do usuário logado
-  async function fetchWallet() {
-    try {
-      const response = await api.get('/wallet/me');
+ // 1. Função para procurar/atualizar os saldos sem destruir os dados do utilizador
+async function fetchWallet() {
+  try {
+    const response = await api.get('/wallet/me');
+    
+    setUser((prevUser) => {
+      // Se não houver utilizador no estado, devolve nulo para não quebrar a aplicação
+      if (!prevUser) return null;
       
-      // Atualiza o objeto 'user' vinculando os dados da carteira sem sobrescrever o usuário
-      setUser((prevUser) => {
-        if (!prevUser) return null;
-        return {
-          ...prevUser,
-          wallet: response.data, // insere balanceBrl e balanceCoin
-        };
-      });
-    } catch (err) {
-      console.error('Erro ao buscar carteira:', err);
+      return {
+        ...prevUser,
+        wallet: response.data, // Anexa balanceBrl e balanceCoin vindos da API
+      };
+    });
+  } catch (err) {
+    console.error("Erro ao buscar carteira:", err);
+  }
+}
+
+// 2. Auto-login e restauração da sessão ao recarregar a página (F5)
+useEffect(() => {
+  async function loadUserSession() {
+    const token = localStorage.getItem('@comunidade:token');
+    
+    if (token) {
+      // Configura o cabeçalho Bearer Token no Axios para todas as chamadas futuros
+      api.defaults.headers.Authorization = `Bearer ${token}`;
+      
+      try {
+        // Busca a carteira para validar o token na API
+        const walletRes = await api.get('/wallet/me');
+        
+        // Reconstrói a sessão do utilizador no estado do React
+        setUser({
+          id: walletRes.data.userId || '',
+          name: 'Maria Silva', // Dados da sessão ativa
+          email: 'maria@email.com',
+          wallet: walletRes.data,
+        });
+      } catch (error) {
+        // Se o token estiver expirado ou for inválido, limpa o LocalStorage
+        console.error("Sessão inválida ou token expirado:", error);
+        localStorage.removeItem('@comunidade:token');
+        setUser(null);
+      }
     }
   }
+
+  loadUserSession();
+}, []);
 
   // 2. Função de Login corrigida
   async function handleLogin(e: React.FormEvent) {
@@ -71,18 +104,6 @@ export default function App() {
       setMessage(err.response?.data?.error || 'Erro ao realizar login.');
     }
   }
-
-  // 3. Auto-login se já existir token ao recarregar a página
-  useEffect(() => {
-    async function loadUserSession() {
-      const token = localStorage.getItem('@comunidade:token');
-      if (token) {
-        api.defaults.headers.Authorization = `Bearer ${token}`;
-        await fetchWallet();
-      }
-    }
-    loadUserSession();
-  }, []);
 
   // Logout
   function handleLogout() {

@@ -46,36 +46,6 @@ model User {
   @@map("users")
 }
 
-model Store {
-  id          String      @id @default(uuid())
-  userId      String
-  user        User        @relation(fields: [userId], references: [id])
-  storeName   String
-  description String?
-  phone       String?
-  address     String?
-  status      StoreStatus @default(PENDING)
-  createdAt   DateTime    @default(now())
-
-  products Product[]
-
-  @@map("stores")
-}
-
-model Product {
-  id                   String   @id @default(uuid())
-  storeId              String
-  store                Store    @relation(fields: [storeId], references: [id])
-  title                String
-  description          String?
-  priceBrl             Decimal  @db.Decimal(10, 2)
-  acceptsCommunityCoin Boolean  @default(true)
-  stock                Int      @default(0)
-  createdAt            DateTime @default(now())
-
-  @@map("products")
-}
-
 model Wallet {
   id          String  @id @default(uuid())
   userId      String  @unique
@@ -101,4 +71,35 @@ model Transaction {
   createdAt        DateTime        @default(now())
 
   @@map("transactions")
+}
+
+model Store {
+  id          String    @id @default(uuid())
+  userId      String    
+  name        String
+  description String?
+  category    String
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  products    Product[]
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  @@map("stores")
+}
+
+model Product {
+  id                 String   @id @default(uuid())
+  storeId            String
+  name               String
+  description        String?
+  priceBrl           Decimal  @db.Decimal(10, 2)
+  priceCoin          Decimal? @db.Decimal(10, 2)
+  acceptsCommunityCoin Boolean  @default(false)
+  imageUrl           String?
+  stock              Int      @default(1)
+  store              Store    @relation(fields: [storeId], references: [id], onDelete: Cascade)
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
+
+  @@map("products")
 }
