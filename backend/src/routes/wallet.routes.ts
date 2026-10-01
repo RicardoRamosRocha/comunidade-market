@@ -125,4 +125,42 @@ walletRoutes.post("/transfer", async (req: Request, res: Response) => {
   }
 });
 
+// GET /wallet/transactions - Listar histórico completo de movimentações
+walletRoutes.get("/transactions", ensureAuthenticated, async (req: Request, res: Response) => {
+  try {
+    const userId = req.user.id;
+
+    // Busca a carteira do utilizador logado
+    const wallet = await prisma.wallet.findUnique({
+      where: { userId },
+    });
+
+    if (!wallet) {
+      return res.status(404).json({ error: "Carteira não encontrada." });
+    }
+
+    // Procura transações onde a carteira do utilizador foi remetente ou destinatária
+    const transactions = await prisma.transaction.findMany({
+      where: {
+        OR: [
+          { senderWalletId: wallet.id },
+          { receiverWalletId: wallet.id },
+        ],
+      },
+      orderBy: {
+        createdAt: "desc",
+      },
+      take: 20, // Limita às últimas 20 transações
+    });
+
+    return res.json({
+      walletId: wallet.id,
+      transactions,
+    });
+  } catch (error) {
+    console.error("Erro ao procurar histórico de transações:", error);
+    return res.status(500).json({ error: "Erro ao carregar histórico." });
+  }
+});
+
 export { walletRoutes };
